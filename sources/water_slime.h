@@ -3,6 +3,7 @@
 
 #include "map.h"
 #include "entity.h"
+#include "slime_graphics.h"
 #include "cmath"
 #include "player.h"
 #include "SFML/Graphics.hpp"
@@ -10,23 +11,15 @@
 class WaterSlime : public Unit {
  public:
   WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
+    graphics_ = new SlimeGraphics;
     health_ = 20;
     max_health_ = health_;
     damage_ = 5;
     target_ = nullptr;
     x_ = x;
     y_ = y;
-    h_ = h;
-    w_ = w;
     speed_ = speed;
     is_attacking_ = false;
-    GenerateFrames();
-    graphics_.state_ = "walk";
-    graphics_.states_["walk"] = 2;
-    graphics_.states_["attack"] = 3;
-    graphics_.states_["die"] = 4;
-    graphics_.sprite_.setTextureRect(graphics_.frames_[2][0]);
-    graphics_.sprite_.setColor(sf::Color(255, 255, 255, 50));
   }
 
   void Update(float time) override {
@@ -42,7 +35,7 @@ class WaterSlime : public Unit {
       }
     }
     if (!is_full_dead_) {
-      graphics_.ChangeFrame(time);
+      graphics_->ChangeFrame(time);
     }
   }
 
@@ -61,29 +54,11 @@ class WaterSlime : public Unit {
   int damage_;
   Mortal* target_;
 
-  void GenerateFrames() {
-    graphics_ = DynamicGraphics("../sources/images/water_slime.png");
-    graphics_.sprite_.setTexture(graphics_.texture_);
-    graphics_.sprite_.setScale(3, 3);
-    for (int j = 0; j < 5; ++j) {
-      graphics_.inverse_frames_.emplace_back(0);
-      for (int i = 0; i < 10; ++i) {
-        graphics_.inverse_frames_[j].push_back(sf::IntRect(10 + i * 32, 172 + j * 32, 12, 20));
-      }
-    }
-    for (int j = 0; j < 5; ++j) {
-      graphics_.frames_.emplace_back(0);
-      for (int i = 0; i < 10; ++i) {
-        graphics_.frames_[j].push_back(sf::IntRect(10 + i * 32 + 12, 172 + j * 32, -12, 20));
-      }
-    }
-  }
-
   void MoveToTarget() {
     if (target_->x_ < x_) {
-      graphics_.is_inverse_ = true;
+      graphics_->is_inverse_ = true;
     } else {
-      graphics_.is_inverse_ = false;
+      graphics_->is_inverse_ = false;
     }
     float s = sqrt((target_->y_ - y_) * (target_->y_ - y_) + (target_->x_ - x_) * (target_->x_ - x_));
     if (s < 50) {
@@ -91,7 +66,7 @@ class WaterSlime : public Unit {
       return;
     }
     is_attacking_ = false;
-    graphics_.state_ = "walk";
+    graphics_->ChangeState("walk");
     float cos_alpha = (target_->x_ - x_) / s;
     float sin_alpha = (target_->y_ - y_) / s;
 
@@ -104,15 +79,12 @@ class WaterSlime : public Unit {
 
   void Attack() {
     if (is_attacking_) {
-      if (static_cast<int>(graphics_.current_frame_) == 9) {
+      if (graphics_->IsAnimationFinished()) {
         target_->health_ -= damage_;
-        graphics_.current_frame_ = 0;
       }
       return;
     }
-    graphics_.fps_ = 15;
-    graphics_.current_frame_ = 0;
-    graphics_.state_ = "attack";
+    graphics_->ChangeState("attack");
     is_attacking_ = true;
   }
 

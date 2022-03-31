@@ -12,7 +12,6 @@ class GameLoop {
  public:
   GameLoop()
       : window_(sf::VideoMode(1000, 1000), "plswork"),
-        graphics(DynamicGraphics()),
         player_(new Player(0, 0, 10, 10, 0.1)),
         fire_(new Fire),
         water_slimes_() {}
@@ -20,12 +19,11 @@ class GameLoop {
   void Run() {
     sf::View camera;
     sf::Clock timer;
-    water_slimes_.push_back(new WaterSlime(0, 0, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(800, 0, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(0, 800, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(800, 800, 10, 10, 0.05));
 
-    while (window_.isOpen() && player_->health_ > 0 && fire_->health_ > 0) {
+    while (window_.isOpen()) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
 
@@ -79,7 +77,6 @@ class GameLoop {
  private:
   sf::RenderWindow window_;
   std::vector<WaterSlime*> water_slimes_;
-  DynamicGraphics graphics;
   Player* player_;
   Fire* fire_;
 };

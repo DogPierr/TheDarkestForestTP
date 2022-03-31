@@ -5,10 +5,6 @@
 #include "entity.h"
 
 class Mortal : public Entity {
- private:
-  const int health_bar_width_ = 20;
-  const int health_bar_height_ = 5;
-
  public:
   float health_;
   float max_health_;
@@ -28,21 +24,24 @@ class Mortal : public Entity {
       health_bar_.setScale(2 * ratio, 1);
     }
     window.draw(health_bar_);
-    graphics_.Draw(window, x_, y_);
+    graphics_->Draw(window, x_, y_);
   }
 
   void Die() {
     if (!is_dead_) {
-      graphics_.current_frame_ = 0;
+      graphics_->current_frame_ = 0;
       is_dead_ = true;
     }
-    if (static_cast<int>(graphics_.current_frame_) == 9) {
+    if (static_cast<int>(graphics_->current_frame_) == 9) {
       is_full_dead_ = true;
     }
-    graphics_.state_ = "die";
+    graphics_->state_ = "die";
   }
 
  private:
+  const int health_bar_width_ = 20;
+  const int health_bar_height_ = 5;
+
   sf::RectangleShape health_bar_;
 
   float GetHealthRatio() {

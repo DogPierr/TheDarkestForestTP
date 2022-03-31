@@ -1,8 +1,7 @@
-#ifndef GAMEPROJECTTP_SOURCES_GRAPHICS_H_
-#define GAMEPROJECTTP_SOURCES_GRAPHICS_H_
+#ifndef GAME_ON_SFML_SOURCES_GRAPHICS_H_
+#define GAME_ON_SFML_SOURCES_GRAPHICS_H_
 
 #include "SFML/Graphics.hpp"
-#include "entity.h"
 #include "static_graphics.h"
 #include <map>
 
@@ -10,7 +9,6 @@ class DynamicGraphics : public Graphics {
  public:
   std::vector<std::vector<sf::IntRect>> frames_, inverse_frames_;
   bool is_inverse_ = false;
-  sf::Sprite area_;
   float fps_ = 5, current_frame_ = 0;
   std::string state_;
   std::map<std::string, int> states_;
@@ -38,7 +36,24 @@ class DynamicGraphics : public Graphics {
     }
     sprite_.setTextureRect(inverse_frames_[states_[state_]][current_frame_]);
   }
-  
+
+  void ChangeState(std::string&& state) {
+    if (state != state_) {
+      fps_ = 15;
+      current_frame_ = 0;
+      state_ = std::move(state);
+    }
+  }
+
+  bool IsAnimationFinished() {
+    if (static_cast<int>(current_frame_) == 9) {
+      current_frame_ = 0;
+      return true;
+    }
+    return static_cast<int>(current_frame_) == 9;
+  }
+
+  virtual void GenerateFrames() = 0;
 };
 
-#endif  // GAMEPROJECTTP_SOURCES_GRAPHICS_H_
+#endif // GAME_ON_SFML_SOURCES_GRAPHICS_H_
