@@ -11,7 +11,6 @@
 
 class Player : public Unit {
  public:
-  std::vector<float> line_of_sight_;
   Graphics background;
   Graphics frame;
 
@@ -78,40 +77,32 @@ class Player : public Unit {
     if (!is_dead_) {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !is_attacking_) {
         line_of_sight_ = {0, -1};
-        graphics_->fps_ = 5;
         y_ -= speed_;
-        graphics_->state_ = "walk";
+        graphics_->MoveInDirectionAnimation(line_of_sight_);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !is_attacking_) {
         line_of_sight_ = {0, 1};
-        graphics_->fps_ = 5;
         y_ += speed_;
-        graphics_->state_ = "walk";
+        graphics_->MoveInDirectionAnimation(line_of_sight_);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !is_attacking_) {
         line_of_sight_ = {1, 0};
-        graphics_->fps_ = 5;
         x_ += speed_;
-        graphics_->state_ = "walk";
-        graphics_->is_inverse_ = false;
+        graphics_->MoveInDirectionAnimation(line_of_sight_);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !is_attacking_) {
         line_of_sight_ = {-1, 0};
-        graphics_->fps_ = 5;
         x_ -= speed_;
-        graphics_->state_ = "walk";
-        graphics_->is_inverse_ = true;
+        graphics_->MoveInDirectionAnimation(line_of_sight_);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        graphics_->fps_ = 12;
-        graphics_->state_ = "attack";
+        graphics_->AttackAnimation();
         is_attacking_ = true;
       }
       if (!IsKeyPressed() ||
           (IsKeyPressed() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
            is_attacking_)) {
-        graphics_->fps_ = 5;
-        graphics_->state_ = "stay";
+        graphics_->StayAnimation();
         is_attacking_ = false;
       }
     }

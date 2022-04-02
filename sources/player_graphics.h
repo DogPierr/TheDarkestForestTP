@@ -3,7 +3,7 @@
 
 #include "dynamic_graphics.h"
 
-class PlayerGraphics: public DynamicGraphics {
+class PlayerGraphics : public DynamicGraphics {
  public:
   PlayerGraphics() : DynamicGraphics("../sources/images/rogue.png") {
     sprite_.setTexture(texture_);
@@ -12,7 +12,7 @@ class PlayerGraphics: public DynamicGraphics {
     states_["stay"] = 0;
     states_["walk"] = 7;
     states_["attack"] = 8;
-    states_["die"] = 9;frame;
+    states_["die"] = 9;
     state_ = "stay";
     sprite_.setTextureRect(frames_[0][0]);
   }
@@ -32,6 +32,33 @@ class PlayerGraphics: public DynamicGraphics {
             sf::IntRect(9 + i * 32 + 20, 1 + j * 32, -20, 31));
       }
     }
+  }
+
+  void MoveInDirectionAnimation(std::vector<float>& line_of_sight) override {
+    if (line_of_sight == std::vector<float>{0, -1} or line_of_sight == std::vector<float>{0, 1}) {
+      state_ = "walk";
+      fps_ = 5;
+    }
+    if (line_of_sight == std::vector<float>{1, 0}) {
+      state_ = "walk";
+      fps_ = 5;
+      is_inverse_ = false;
+    }
+    if (line_of_sight == std::vector<float>{-1, 0}) {
+      state_ = "walk";
+      fps_ = 5;
+      is_inverse_ = true;
+    }
+  }
+
+  void AttackAnimation() override {
+    fps_ = 12;
+    state_ = "attack";
+  }
+
+  void StayAnimation() override {
+    fps_ = 5;
+    state_ = "stay";
   }
 };
 

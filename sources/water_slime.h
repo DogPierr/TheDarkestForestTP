@@ -12,6 +12,7 @@ class WaterSlime : public Unit {
  public:
   WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
     graphics_ = new SlimeGraphics;
+    line_of_sight_ = {1, 0};
     health_ = 20;
     max_health_ = health_;
     damage_ = 5;
@@ -55,20 +56,18 @@ class WaterSlime : public Unit {
   Mortal* target_;
 
   void MoveToTarget() {
-    if (target_->x_ < x_) {
-      graphics_->is_inverse_ = true;
-    } else {
-      graphics_->is_inverse_ = false;
-    }
-    float s = sqrt((target_->y_ - y_) * (target_->y_ - y_) + (target_->x_ - x_) * (target_->x_ - x_));
+    float cos_alpha = ScalarProduct()[0];
+    float sin_alpha = ScalarProduct()[1];
+    float s = ScalarProduct()[2];
+
+    SetDirection(cos_alpha);
+    graphics_->MoveInDirectionAnimation(line_of_sight_);
+
     if (s < 50) {
       Attack();
       return;
     }
     is_attacking_ = false;
-    graphics_->ChangeState("walk");
-    float cos_alpha = (target_->x_ - x_) / s;
-    float sin_alpha = (target_->y_ - y_) / s;
 
     float dx_ = speed_ * cos_alpha;
     float dy_ = speed_ * sin_alpha;
@@ -84,8 +83,24 @@ class WaterSlime : public Unit {
       }
       return;
     }
-    graphics_->ChangeState("attack");
+    graphics_->AttackAnimation();
     is_attacking_ = true;
+  }
+
+  std::vector<float> ScalarProduct() {
+    float s = sqrt((target_->y_ - y_) * (target_->y_ - y_) + (target_->x_ - x_) * (target_->x_ - x_));
+    float cos_alpha = (target_->x_ - x_) / s;
+    float sin_alpha = (target_->y_ - y_) / s;
+
+    return {cos_alpha, sin_alpha, s};
+  }
+
+  void SetDirection(float cos_alpha) {
+    if (cos_alpha < 0) {
+      line_of_sight_ = {-1, 0};
+    } else {
+      line_of_sight_ = {1, 0};
+    }
   }
 
 };

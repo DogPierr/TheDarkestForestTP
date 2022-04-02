@@ -29,6 +29,28 @@ class SlimeGraphics : public DynamicGraphics {
       }
     }
   }
+
+  void MoveInDirectionAnimation(std::vector<float>& line_of_sight) override {
+    if (line_of_sight == std::vector<float>{0, -1} or line_of_sight == std::vector<float>{0, 1}) {
+      state_ = "walk";
+      fps_ = 5;
+    }
+    if (line_of_sight == std::vector<float>{1, 0}) {
+      state_ = "walk";
+      fps_ = 5;
+      is_inverse_ = false;
+    }
+    if (line_of_sight == std::vector<float>{-1, 0}) {
+      state_ = "walk";
+      fps_ = 5;
+      is_inverse_ = true;
+    }
+  }
+
+  void AttackAnimation() override {
+    fps_ = 12;
+    state_ = "attack";
+  }
 };
 
 

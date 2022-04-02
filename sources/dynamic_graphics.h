@@ -54,6 +54,10 @@ class DynamicGraphics : public Graphics {
   }
 
   virtual void GenerateFrames() = 0;
+  virtual void MoveInDirectionAnimation(std::vector<float>& line_of_sight) {}
+  virtual void AttackAnimation() {}
+  virtual void StayAnimation() {}
+
 };
 
 #endif // GAME_ON_SFML_SOURCES_GRAPHICS_H_
