@@ -78,6 +78,7 @@ class WaterSlime : public Unit {
 
   void Attack() {
     if (is_attacking_) {
+      graphics_->AttackAnimation();
       if (graphics_->IsAnimationFinished()) {
         target_->health_ -= damage_;
       }
