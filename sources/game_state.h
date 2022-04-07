@@ -15,8 +15,8 @@ class GameState {
   }
 
   float GetPlayerDamage() {
-      float copy = player_damage_;
-      player_damage_ = 0;
+      float copy = player_take_damage_;
+    player_take_damage_ = 0;
       return copy;
   }
 
@@ -26,13 +26,13 @@ class GameState {
     bool is_attacking = fire_radius < 50 || player_radius < 50;
     if (player_radius < fire_radius) {
       if (player_radius < 50) {
-        if (is_attacking && is_animation_finished) player_damage_ += 5;
+        if (is_attacking && is_animation_finished) player_take_damage_ += slime_damage;
         return {true, player_x_, player_y_};
       }
       return {false, player_x_, player_y_};
     }
     if (fire_radius < 50) {
-      if (is_attacking && is_animation_finished) fire_damage_ += 1;
+      if (is_attacking && is_animation_finished) fire_take_damage_ += slime_damage / 5;
       return {true, 0, 0};
     }
     return {false, 0, 0};
@@ -52,14 +52,14 @@ class GameState {
                 distance;
     if (is_player_attacking_  && is_players_animation_finished_ && cos >= 0 && distance <= 50) {
       is_player_attacking_ = false;
-      return 10;
+      return player_damage_;
     }
     return 0;
   }
 
   float GetFireDamage() {
-    float copy = fire_damage_;
-    fire_damage_ = 0;
+    float copy = fire_take_damage_;
+    fire_take_damage_ = 0;
     return copy;
   }
 
@@ -84,6 +84,8 @@ class GameState {
   bool is_player_attacking_ = false;
   bool is_players_animation_finished_ = false;
   float fire_radius_ = 500;
-  float player_damage_ = 0;
-  float fire_damage_ = 0;
+  float player_take_damage_ = 0;
+  float fire_take_damage_ = 0;
+  float player_damage_ = 10;
+  float slime_damage = 5;
 };

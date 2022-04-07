@@ -11,8 +11,6 @@ class DynamicGraphics : public Graphics {
       : frames_(0),
         inverse_frames_(0),
         is_inverse_(false),
-        fps_(5),
-        current_frame_(0),
         state_("stay"),
         states_() {}
 
@@ -40,11 +38,11 @@ class DynamicGraphics : public Graphics {
   }
 
   bool IsAnimationFinished() {
-    if (static_cast<int>(current_frame_) == 9) {
+    if (static_cast<int>(current_frame_) == frames_[states_[state_]].size() - 1) {
       current_frame_ = 0;
       return true;
     }
-    return static_cast<int>(current_frame_) == 9;
+    return static_cast<int>(current_frame_) == frames_[states_[state_]].size() - 1;
   }
 
   virtual void GenerateFrames() = 0;
