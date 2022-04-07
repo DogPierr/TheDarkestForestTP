@@ -1,59 +1,53 @@
 #ifndef GAME_ON_SFML_SOURCES_WATER_SLIME_H_
 #define GAME_ON_SFML_SOURCES_WATER_SLIME_H_
 
-#include "map.h"
-#include "entity.h"
-#include "slime_graphics.h"
-#include "cmath"
-#include "player.h"
 #include "SFML/Graphics.hpp"
+#include "cmath"
+#include "entity.h"
+#include "map.h"
+#include "player.h"
+#include "slime_graphics.h"
 
 class WaterSlime : public Unit {
- public:
+public:
   WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
     graphics_ = new SlimeGraphics;
     line_of_sight_ = {1, 0};
     health_ = 20;
     max_health_ = health_;
     damage_ = 5;
-    target_ = nullptr;
     x_ = x;
     y_ = y;
     speed_ = speed;
     is_attacking_ = false;
   }
 
-  void Update(float time) override {
-    if (health_ <= 0) {
-      speed_ = 0;
-      Die();
-    } else {
-      if (target_ != nullptr) {
-        MoveToTarget();
-      }
-      if (target_->health_ <= 0) {
-        target_ = nullptr;
-      }
-    }
+  void Update(float time) {
     if (!is_full_dead_) {
       graphics_->ChangeFrame(time);
     }
   }
 
-  void SetTarget(Mortal* target) {
-    target_ = target;
+  void Act(GameState *gameState) override {
+    if (health_ <= 0) {
+      speed_ = 0;
+      Die();
+      return;
+    }
+    auto [is_attacking, target_x, target_y] = gameState->SetSlimeTarget(x_, y_);
+    is_attacking = is_attacking_;
+    target_x_ = target_x;
+    target_y_ = target_y;
+    MoveToTarget();
+    if (is_attacking_) {
+      Attack();
+    }
+    health_ -= gameState->SlimeDamage(x_, y_);
   }
 
-  bool IsInRadius(Entity* entity) {
-    float distance = sqrt((entity->x_ - x_) * (entity->x_ - x_) + (entity->y_ - y_) * (entity->y_ - y_));
-    return distance < radius;
-  }
-
- private:
+private:
   const float radius = 100;
-  bool is_attacking_;
   int damage_;
-  Mortal* target_;
 
   void MoveToTarget() {
     float cos_alpha = ScalarProduct()[0];
@@ -63,11 +57,8 @@ class WaterSlime : public Unit {
     SetDirection(cos_alpha);
     graphics_->MoveInDirectionAnimation(line_of_sight_);
 
-    if (s < 50) {
-      Attack();
+    if (is_attacking_)
       return;
-    }
-    is_attacking_ = false;
 
     float dx_ = speed_ * cos_alpha;
     float dy_ = speed_ * sin_alpha;
@@ -79,19 +70,15 @@ class WaterSlime : public Unit {
   void Attack() {
     if (is_attacking_) {
       graphics_->AttackAnimation();
-      if (graphics_->IsAnimationFinished()) {
-        target_->health_ -= damage_;
-      }
       return;
     }
-    graphics_->AttackAnimation();
-    is_attacking_ = true;
   }
 
   std::vector<float> ScalarProduct() {
-    float s = sqrt((target_->y_ - y_) * (target_->y_ - y_) + (target_->x_ - x_) * (target_->x_ - x_));
-    float cos_alpha = (target_->x_ - x_) / s;
-    float sin_alpha = (target_->y_ - y_) / s;
+    float s = sqrt((target_y_ - y_) * (target_y_ - y_) +
+                   (target_x_ - x_) * (target_x_ - x_));
+    float cos_alpha = (target_x_ - x_) / s;
+    float sin_alpha = (target_y_ - y_) / s;
 
     return {cos_alpha, sin_alpha, s};
   }
@@ -104,6 +91,9 @@ class WaterSlime : public Unit {
     }
   }
 
+  float target_x_;
+  float target_y_;
+  bool is_attacking_;
 };
 
-#endif //GAME_ON_SFML_SOURCES_WATER_SLIME_H_
+#endif // GAME_ON_SFML_SOURCES_WATER_SLIME_H_

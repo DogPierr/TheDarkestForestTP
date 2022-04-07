@@ -4,25 +4,17 @@
 #include "SFML/Graphics.hpp"
 #include "cmath"
 #include "entity.h"
-#include "static_graphics.h"
-#include "unit.h"
 #include "iostream"
 #include "player_graphics.h"
+#include "static_graphics.h"
+#include "unit.h"
 
 class Player : public Unit {
  public:
-  Graphics background;
-  Graphics frame;
-
-  Player(float x, float y, float h, float w, float speed)
-      : Unit(),
-        background("../sources/images/background.png"),
-        frame("../sources/images/frame.png") {
+  Player(float x, float y, float h, float w, float speed) : Unit() {
     graphics_ = new PlayerGraphics;
     health_ = 100;
     max_health_ = health_;
-    background.sprite_.setScale(0.3, 0.3);
-    frame.sprite_.setScale(0.3, 0.3);
     is_attacking_ = false;
     is_dead_ = false;
     is_full_dead_ = false;
@@ -43,7 +35,7 @@ class Player : public Unit {
                                  line_of_sight_[1] * line_of_sight_[1]);
     float angle = (line_of_sight_[0] * radius_vector[0] +
                    line_of_sight_[1] * radius_vector[1]) /
-                  (distance * line_of_sight_s);
+                  distance;
     if (is_attacking_ && static_cast<int>(graphics_->current_frame_) == 9 &&
         angle >= 0 && distance <= 50) {
       enemy->health_ -= damage_;
@@ -51,23 +43,11 @@ class Player : public Unit {
     }
   }
 
-  void Update(float time) override {
-    if (health_ <= 0) {
-      speed_ = 0;
-      Die();
-    }
-    KeyboardRead();
-    if (!is_full_dead_) {
-      graphics_->ChangeFrame(time);
-    }
-  }
+  void Update(float time) override {}
 
-  void DrawBackground(sf::RenderWindow& window) {
-    background.Draw(window, -102 + x_, -102 + y_);
-  }
-
-  void DrawFrame(sf::RenderWindow& window) {
-    frame.Draw(window, -102 + x_, -102 + y_);
+  void Act(GameState* gameState) override {
+    health_ -= gameState->GetPlayerDamage();
+    if (health_ <= 0) exit(0);
   }
 
   ~Player() {}

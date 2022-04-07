@@ -4,8 +4,13 @@
 #include "dynamic_graphics.h"
 
 class PlayerGraphics : public DynamicGraphics {
- public:
-  PlayerGraphics() : DynamicGraphics("../sources/images/rogue.png") {
+public:
+  PlayerGraphics()
+      : DynamicGraphics("../sources/images/rogue.png"),
+        background("../sources/images/background.png"),
+        frame("../sources/images/frame.png") {
+    background.sprite_.setScale(0.3, 0.3);
+    frame.sprite_.setScale(0.3, 0.3);
     sprite_.setTexture(texture_);
     sprite_.setScale(3, 3);
     GenerateFrames();
@@ -17,12 +22,21 @@ class PlayerGraphics : public DynamicGraphics {
     sprite_.setTextureRect(frames_[0][0]);
   }
 
+  void Draw(sf::RenderWindow &window, GameState *gameState, float x,
+            float y) override {
+    if (gameState->IsPlayerOutside()) {
+      background.Draw(window, gameState, -102 + x, -102 + y);
+      frame.Draw(window, gameState, -102 + x, -102 + y);
+    }
+    sprite_.setPosition(x, y);
+    window.draw(sprite_);
+  }
+
   void GenerateFrames() override {
     for (int j = 0; j < 10; ++j) {
       frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
-        frames_[j].push_back(
-            sf::IntRect(9 + i * 32, 1 + j * 32, 20, 31));
+        frames_[j].push_back(sf::IntRect(9 + i * 32, 1 + j * 32, 20, 31));
       }
     }
     for (int j = 0; j < 10; ++j) {
@@ -34,8 +48,9 @@ class PlayerGraphics : public DynamicGraphics {
     }
   }
 
-  void MoveInDirectionAnimation(std::vector<float>& line_of_sight) override {
-    if (line_of_sight == std::vector<float>{0, -1} or line_of_sight == std::vector<float>{0, 1}) {
+  void MoveInDirectionAnimation(std::vector<float> &line_of_sight) override {
+    if (line_of_sight == std::vector<float>{0, -1} or
+        line_of_sight == std::vector<float>{0, 1}) {
       state_ = "walk";
       fps_ = 5;
     }
@@ -60,6 +75,10 @@ class PlayerGraphics : public DynamicGraphics {
     fps_ = 5;
     state_ = "stay";
   }
+
+private:
+  Graphics background;
+  Graphics frame;
 };
 
-#endif //THEDARKESTFOREST_SOURCES_PLAYER_GRAPHICS_H_
+#endif // THEDARKESTFOREST_SOURCES_PLAYER_GRAPHICS_H_

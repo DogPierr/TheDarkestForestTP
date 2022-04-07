@@ -2,6 +2,7 @@
 #define GAME_ON_SFML_STATIC_GRAPHICS_H
 
 #include "SFML/Graphics.hpp"
+#include "game_state.h"
 
 class Graphics {
  public:
@@ -18,7 +19,7 @@ class Graphics {
     sprite_.setColor(color);
   }
 
-  void Draw(sf::RenderWindow& window, float x, float y) {
+  virtual void Draw(sf::RenderWindow& window, GameState* gameState, float x, float y) {
     sprite_.setPosition(x, y);
     window.draw(sprite_);
   }
