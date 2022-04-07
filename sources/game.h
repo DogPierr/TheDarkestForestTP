@@ -18,7 +18,6 @@ class GameLoop {
     objects_.push_back(new WaterSlime(800, 0, 10, 10, 0.04));
     objects_.push_back(new WaterSlime(0, 800, 10, 10, 0.04));
     objects_.push_back(new WaterSlime(800, 800, 10, 10, 0.04));
-
   }
 
   void Run() {

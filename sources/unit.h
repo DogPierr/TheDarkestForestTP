@@ -10,7 +10,6 @@ class Unit : public Mortal {
   bool is_attacking_;
   int damage_;
   std::vector<float> line_of_sight_;
-  bool is_dead_ = false;
 
   float speed_;
 

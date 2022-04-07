@@ -6,8 +6,6 @@
 
 class Graphics {
  public:
-  sf::Texture texture_;
-  sf::Sprite sprite_;
   Graphics() = default;
 
   Graphics(const std::string& image) {
@@ -23,6 +21,10 @@ class Graphics {
     sprite_.setPosition(x, y);
     window.draw(sprite_);
   }
+
+ protected:
+  sf::Texture texture_;
+  sf::Sprite sprite_;
 };
 
 #endif  // GAME_ON_SFML_STATIC_GRAPHICS_H

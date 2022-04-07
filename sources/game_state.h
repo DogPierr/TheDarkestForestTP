@@ -51,7 +51,7 @@ class GameState {
                  player_line_of_sight_[1] * radius_vector[1]) /
                 distance;
     if (is_player_attacking_  && is_players_animation_finished_ && cos >= 0 && distance <= 50) {
-      is_players_animation_finished_ = false;
+      is_player_attacking_ = false;
       return 10;
     }
     return 0;

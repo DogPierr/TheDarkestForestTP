@@ -34,10 +34,9 @@ class Player : public Unit {
     float angle = (line_of_sight_[0] * radius_vector[0] +
                    line_of_sight_[1] * radius_vector[1]) /
                   distance;
-    if (is_attacking_ && static_cast<int>(graphics_->current_frame_) == 9 &&
+    if (is_attacking_ && graphics_->IsAnimationFinished() &&
         angle >= 0 && distance <= 50) {
       enemy->health_ -= damage_;
-      graphics_->current_frame_ = 0;
     }
   }
 

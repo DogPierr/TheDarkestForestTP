@@ -7,12 +7,6 @@
 
 class DynamicGraphics : public Graphics {
  public:
-  std::vector<std::vector<sf::IntRect>> frames_, inverse_frames_;
-  bool is_inverse_ = false;
-  float fps_ = 5, current_frame_ = 0;
-  std::string state_;
-  std::map<std::string, int> states_;
-
   DynamicGraphics()
       : frames_(0),
         inverse_frames_(0),
@@ -58,6 +52,12 @@ class DynamicGraphics : public Graphics {
   virtual void AttackAnimation() {}
   virtual void StayAnimation() {}
 
+ protected:
+  std::vector<std::vector<sf::IntRect>> frames_, inverse_frames_;
+  bool is_inverse_ = false;
+  float fps_ = 5, current_frame_ = 0;
+  std::string state_;
+  std::map<std::string, int> states_;
 };
 
 #endif // GAME_ON_SFML_SOURCES_GRAPHICS_H_

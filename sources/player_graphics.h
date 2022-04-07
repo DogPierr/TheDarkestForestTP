@@ -9,8 +9,6 @@ public:
       : DynamicGraphics("../sources/images/rogue.png"),
         background("../sources/images/background.png"),
         frame("../sources/images/frame.png") {
-    background.sprite_.setScale(0.3, 0.3);
-    frame.sprite_.setScale(0.3, 0.3);
     sprite_.setTexture(texture_);
     sprite_.setScale(3, 3);
     GenerateFrames();
