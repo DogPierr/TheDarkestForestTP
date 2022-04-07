@@ -48,11 +48,13 @@ class Player : public Unit {
   }
 
   void Act(GameState* gameState) override {
+    if (health_ <= 0) {
+      speed_ = 0;
+      Die();
+      return;
+    }
     health_ -= gameState->GetPlayerDamage();
     gameState->GetPlayerData(x_, y_, is_attacking_, graphics_->IsAnimationFinished(), line_of_sight_);
-    if (health_ <= 0) {
-      Die();
-    }
   }
 
   ~Player() {}
