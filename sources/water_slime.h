@@ -34,8 +34,8 @@ public:
       Die();
       return;
     }
-    auto [is_attacking, target_x, target_y] = gameState->SetSlimeTarget(x_, y_);
-    is_attacking = is_attacking_;
+    auto [is_attacking, target_x, target_y] = gameState->SetSlimeTarget(x_, y_, graphics_->IsAnimationFinished());
+    is_attacking_ = is_attacking;
     target_x_ = target_x;
     target_y_ = target_y;
     MoveToTarget();

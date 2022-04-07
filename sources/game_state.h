@@ -5,11 +5,12 @@
 
 class GameState {
  public:
-  void GetPlayerData(float player_x, float player_y, bool is_player_attacking,
+  void GetPlayerData(float player_x, float player_y, bool is_player_attacking, bool is_finished,
                      const std::vector<float>& players_line_of_sight) {
     player_x_ = player_x;
     player_y_ = player_y;
     is_player_attacking_ = is_player_attacking;
+    is_players_animation_finished_ = is_finished;
     player_line_of_sight_ = players_line_of_sight;
   }
 
@@ -19,19 +20,19 @@ class GameState {
       return copy;
   }
 
-  std::tuple<bool, float, float> SetSlimeTarget(float x, float y) {
+  std::tuple<bool, float, float> SetSlimeTarget(float x, float y, bool is_animation_finished) {
     float player_radius = CalculateRadius(player_x_, player_y_, x, y);
     float fire_radius = CalculateRadius(0, 0, x, y);
     bool is_attacking = fire_radius < 50 || player_radius < 50;
     if (player_radius < fire_radius) {
       if (player_radius < 50) {
-        if (is_attacking) player_damage_ += 5;
+        if (is_attacking && is_animation_finished) player_damage_ += 5;
         return {true, player_x_, player_y_};
       }
       return {false, player_x_, player_y_};
     }
     if (fire_radius < 50) {
-      if (is_attacking) fire_damage_ += 1;
+      if (is_attacking && is_animation_finished) fire_damage_ += 1;
       return {true, 0, 0};
     }
     return {false, 0, 0};
@@ -49,7 +50,8 @@ class GameState {
     float cos = (player_line_of_sight_[0] * radius_vector[0] +
                  player_line_of_sight_[1] * radius_vector[1]) /
                 distance;
-    if (is_player_attacking_ && cos >= 0 && distance <= 50) {
+    if (is_player_attacking_  && is_players_animation_finished_ && cos >= 0 && distance <= 50) {
+      is_players_animation_finished_ = false;
       return 10;
     }
     return 0;
@@ -80,6 +82,7 @@ class GameState {
   std::vector<float> player_line_of_sight_;
   bool is_player_outside_ = false;
   bool is_player_attacking_ = false;
+  bool is_players_animation_finished_ = false;
   float fire_radius_ = 500;
   float player_damage_ = 0;
   float fire_damage_ = 0;

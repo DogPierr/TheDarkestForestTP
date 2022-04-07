@@ -11,13 +11,13 @@
 class GameLoop {
  public:
   GameLoop()
-      : window_(sf::VideoMode(1000, 1000), "plswork"),
-        gameState(new GameState), player_(new Player(0, 0, 10, 10, 0.1)) {
+      : window_(sf::VideoMode(1000, 1000), "TheDarkestForest"),
+        gameState(new GameState), player_(new Player(0, 0, 10, 10, 0.07)) {
     objects_.push_back(new Fire);
     objects_.push_back(player_);
-    objects_.push_back(new WaterSlime(800, 0, 10, 10, 0.05));
-    objects_.push_back(new WaterSlime(0, 800, 10, 10, 0.05));
-    objects_.push_back(new WaterSlime(800, 800, 10, 10, 0.05));
+    objects_.push_back(new WaterSlime(800, 0, 10, 10, 0.04));
+    objects_.push_back(new WaterSlime(0, 800, 10, 10, 0.04));
+    objects_.push_back(new WaterSlime(800, 800, 10, 10, 0.04));
 
   }
 

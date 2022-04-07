@@ -31,8 +31,6 @@ class Player : public Unit {
     radius_vector[1] = enemy->y_ - y_;
     float distance = sqrt((enemy->x_ - x_) * (enemy->x_ - x_) +
                           (enemy->y_ - y_) * (enemy->y_ - y_));
-    float line_of_sight_s = sqrt(line_of_sight_[0] * line_of_sight_[0] +
-                                 line_of_sight_[1] * line_of_sight_[1]);
     float angle = (line_of_sight_[0] * radius_vector[0] +
                    line_of_sight_[1] * radius_vector[1]) /
                   distance;
@@ -43,11 +41,19 @@ class Player : public Unit {
     }
   }
 
-  void Update(float time) override {}
+  void Update(float time) override {
+    KeyboardRead();
+    if (!is_full_dead_) {
+      graphics_->ChangeFrame(time);
+    }
+  }
 
   void Act(GameState* gameState) override {
     health_ -= gameState->GetPlayerDamage();
-    if (health_ <= 0) exit(0);
+    gameState->GetPlayerData(x_, y_, is_attacking_, graphics_->IsAnimationFinished(), line_of_sight_);
+    if (health_ <= 0) {
+      Die();
+    }
   }
 
   ~Player() {}
