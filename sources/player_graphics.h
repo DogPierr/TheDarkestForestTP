@@ -11,6 +11,8 @@ public:
         frame("../sources/images/frame.png") {
     sprite_.setTexture(texture_);
     sprite_.setScale(3, 3);
+    background.SetScale(0.3);
+    frame.SetScale(0.3);
     GenerateFrames();
     states_["stay"] = 0;
     states_["walk"] = 7;
@@ -22,6 +24,7 @@ public:
 
   void Draw(sf::RenderWindow &window, GameState *gameState, float x,
             float y) override {
+    std::cout << gameState->IsPlayerOutside() << '\n';
     if (gameState->IsPlayerOutside()) {
       background.Draw(window, gameState, -102 + x, -102 + y);
       frame.Draw(window, gameState, -102 + x, -102 + y);
@@ -47,7 +50,7 @@ public:
   }
 
   void MoveInDirectionAnimation(std::vector<float> &line_of_sight) override {
-    if (line_of_sight == std::vector<float>{0, -1} or
+    if (line_of_sight == std::vector<float>{0, -1} ||
         line_of_sight == std::vector<float>{0, 1}) {
       state_ = "walk";
       fps_ = 5;

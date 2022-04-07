@@ -65,7 +65,7 @@ class GameState {
 
   bool IsVisible(float x, float y) {
     return CalculateRadius(x, y, 0, 0) < fire_radius_ * 0.7 ||
-           (is_player_outside_ &&
+           (IsPlayerOutside() &&
             CalculateRadius(x, y, player_x_, player_y_) < 100);
   }
 
@@ -80,7 +80,6 @@ class GameState {
 
   float player_x_ = 0, player_y_ = 0;
   std::vector<float> player_line_of_sight_;
-  bool is_player_outside_ = false;
   bool is_player_attacking_ = false;
   bool is_players_animation_finished_ = false;
   float fire_radius_ = 500;

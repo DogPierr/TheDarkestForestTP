@@ -17,6 +17,10 @@ class Graphics {
     sprite_.setColor(color);
   }
 
+  void SetScale(float number) {
+    sprite_.setScale(number, number);
+  }
+
   virtual void Draw(sf::RenderWindow& window, GameState* gameState, float x, float y) {
     sprite_.setPosition(x, y);
     window.draw(sprite_);
