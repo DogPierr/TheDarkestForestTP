@@ -66,12 +66,16 @@ class GameState {
   bool IsVisible(float x, float y) {
     return CalculateRadius(x, y, 0, 0) < fire_radius_ * 0.7 ||
            (IsPlayerOutside() &&
-            CalculateRadius(x, y, player_x_, player_y_) < 100);
+            CalculateRadius(x, y, player_x_, player_y_) < 50);
   }
 
   bool IsPlayerOutside() {
     return CalculateRadius(player_y_, player_x_, 0, 0) > fire_radius_;
   };
+
+  float GetIntencityRatio(float x, float y) {
+    return sqrt(x * x + y * y) / (0.7 * fire_radius_);
+  }
 
  private:
   float CalculateRadius(float x1, float y1, float x2, float y2) {

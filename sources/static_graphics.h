@@ -21,6 +21,14 @@ class Graphics {
     sprite_.setScale(number, number);
   }
 
+  void SetBlackout(float ratio) {
+    if (ratio < 1) {
+      sprite_.setColor(sf::Color(255 * (1 - ratio), 255 * (1 - ratio), 255 * (1 - ratio)));
+      return;
+    }
+    sprite_.setColor(sf::Color(0, 0, 0));
+  }
+
   virtual void Draw(sf::RenderWindow& window, GameState* gameState, float x, float y) {
     sprite_.setPosition(x, y);
     window.draw(sprite_);

@@ -7,6 +7,7 @@
 #include "map.h"
 #include "player.h"
 #include "water_slime.h"
+#include "cmath"
 
 class GameLoop {
  public:
@@ -15,9 +16,7 @@ class GameLoop {
         gameState(new GameState), player_(new Player(0, 0, 10, 10, 0.07)) {
     objects_.push_back(new Fire);
     objects_.push_back(player_);
-    objects_.push_back(new WaterSlime(800, 0, 10, 10, 0.04));
-    objects_.push_back(new WaterSlime(0, 800, 10, 10, 0.04));
-    objects_.push_back(new WaterSlime(800, 800, 10, 10, 0.04));
+    NewWave();
   }
 
   void Run() {
@@ -27,6 +26,9 @@ class GameLoop {
     while (window_.isOpen()) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
+      if (objects_.size() <= 2) {
+        NewWave();
+      }
       sf::Event event;
       while (window_.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -34,10 +36,16 @@ class GameLoop {
         }
       }
       window_.clear();
-      for (Entity* entity : objects_) {
-        entity->Draw(window_, gameState);
+      auto iter = objects_.begin();
+      for (Entity *entity: objects_) {
         entity->Update(time);
         entity->Act(gameState);
+        if (dynamic_cast<Mortal*>(entity)->IsDead()) {
+          objects_.erase(iter);
+        } else {
+          entity->Draw(window_, gameState);
+          ++iter;
+        }
       }
       camera.setCenter(player_->x_, player_->y_);
       window_.setView(camera);
@@ -45,15 +53,34 @@ class GameLoop {
     }
   }
 
+  void NewWave() {
+    ++amount_of_enemies_;
+    float radians_spacing = (2 * M_PI) / amount_of_enemies_;
+    float cur_angle = 0;
+    for (int i = 0; i < amount_of_enemies_; ++i) {
+      float distance = 200;
+      objects_.push_back(new WaterSlime(distance * cos(cur_angle), distance * sin(cur_angle), 10, 10, 0.04));
+      cur_angle += radians_spacing;
+    }
+  }
+
   void Terminate() {}
 
  private:
-  GameState* gameState;
-  std::vector<Entity*> objects_;
+  int amount_of_enemies_ = 3;
+  float max_spawn_distance_ = 1000;
+  GameState *gameState;
+  std::vector<Entity *> objects_;
   sf::RenderWindow window_;
-  std::vector<WaterSlime*> water_slimes_;
-  Player* player_;
-  Fire* fire_;
+  std::vector<WaterSlime *> water_slimes_;
+  Player *player_;
+  Fire *fire_;
+  int GetRandomNumber(int min, int max) {
+    srand(time(NULL));
+    int num = min + rand() % (max - min + 1);
+    return num;
+  }
+
 };
 
 #endif  // GAME_ON_SFML_SOURCES_GAME_H_

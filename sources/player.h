@@ -47,6 +47,11 @@ class Player : public Unit {
     }
   }
 
+  void Draw(sf::RenderWindow& window, GameState* gameState) override {
+    graphics_->Draw(window, gameState, x_, y_);
+    DrawHealthBar(window);
+  }
+
   void Act(GameState* gameState) override {
     if (health_ <= 0) {
       speed_ = 0;

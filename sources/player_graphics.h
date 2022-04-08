@@ -24,12 +24,16 @@ public:
 
   void Draw(sf::RenderWindow &window, GameState *gameState, float x,
             float y) override {
-    std::cout << gameState->IsPlayerOutside() << '\n';
     if (gameState->IsPlayerOutside()) {
       background.Draw(window, gameState, -102 + x, -102 + y);
+      SetBlackout(0);
       frame.Draw(window, gameState, -102 + x, -102 + y);
+      sprite_.setPosition(x, y);
+      window.draw(sprite_);
+      return;
     }
     sprite_.setPosition(x, y);
+    SetBlackout(gameState->GetIntencityRatio(x, y));
     window.draw(sprite_);
   }
 
