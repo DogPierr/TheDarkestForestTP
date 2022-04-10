@@ -44,6 +44,7 @@ class GameLoop {
           entity->Act(gameState);
         }
         if (dynamic_cast<Mortal *>(entity)->IsDead() && iter != objects_.begin() && iter != objects_.begin() + 1) {
+          entity->~Entity();
           objects_.erase(iter);
         } else {
           entity->Draw(window_, gameState);
@@ -123,6 +124,12 @@ class GameLoop {
   }
 
   void NewGame() {
+    for (auto iter : objects_) {
+      iter->~Entity();
+    }
+    delete player_;
+    delete gameState;
+    amount_of_enemies_ = 3;
     objects_.clear();
     objects_.push_back(new Fire);
     player_ = new Player(0, 0, 10, 10, 0.07);

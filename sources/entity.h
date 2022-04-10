@@ -19,6 +19,8 @@ public:
   virtual void Act(GameState *gameState) {}
 
   virtual void Update(float time) = 0;
+
+  ~Entity() = default;
  protected:
   DynamicGraphics *graphics_;
 };

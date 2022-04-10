@@ -24,7 +24,7 @@ class GameState {
     float player_radius = CalculateRadius(player_x_, player_y_, x, y);
     float fire_radius = CalculateRadius(0, 0, x, y);
     bool is_attacking = fire_radius < 50 || player_radius < 50;
-    if (player_radius < fire_radius) {
+    if (player_radius < 100) {
       if (player_radius < 50) {
         if (is_attacking && is_animation_finished) player_take_damage_ += slime_damage;
         return {true, player_x_, player_y_};
