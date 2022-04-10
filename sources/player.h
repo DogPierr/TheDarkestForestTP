@@ -59,7 +59,7 @@ class Player : public Unit {
       return;
     }
     health_ -= gameState->GetPlayerDamage();
-    gameState->GetPlayerData(x_, y_, is_attacking_, graphics_->IsAnimationFinished(), line_of_sight_);
+    gameState->SetPlayerData(x_, y_, is_attacking_, graphics_->IsAnimationFinished(), line_of_sight_);
   }
 
   ~Player() {}

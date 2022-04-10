@@ -5,7 +5,7 @@
 
 class GameState {
  public:
-  void GetPlayerData(float player_x, float player_y, bool is_player_attacking, bool is_finished,
+  void SetPlayerData(float player_x, float player_y, bool is_player_attacking, bool is_finished,
                      const std::vector<float>& players_line_of_sight) {
     player_x_ = player_x;
     player_y_ = player_y;
@@ -50,7 +50,7 @@ class GameState {
     float cos = (player_line_of_sight_[0] * radius_vector[0] +
                  player_line_of_sight_[1] * radius_vector[1]) /
                 distance;
-    if (is_player_attacking_  && is_players_animation_finished_ && cos >= 0 && distance <= 50) {
+    if (is_player_attacking_ && is_players_animation_finished_ && cos >= 0 && distance <= 50) {
       is_player_attacking_ = false;
       return player_damage_;
     }
