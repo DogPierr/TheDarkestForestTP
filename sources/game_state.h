@@ -77,7 +77,19 @@ class GameState {
     return sqrt(x * x + y * y) / (0.7 * fire_radius_);
   }
 
- private:
+  static GameState* Instance() {
+    if (game_state_ptr_ == nullptr) {
+      game_state_ptr_ = new GameState;
+    }
+    return game_state_ptr_;
+  }
+
+  GameState(const GameState&) = delete;
+  GameState& operator=(const GameState&) = delete;
+private:
+  GameState() = default;
+  static GameState* game_state_ptr_;
+
   float CalculateRadius(float x1, float y1, float x2, float y2) {
     return std::sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
   }
@@ -92,3 +104,5 @@ class GameState {
   float player_damage_ = 10;
   float slime_damage = 5;
 };
+
+GameState* GameState::game_state_ptr_ = nullptr;

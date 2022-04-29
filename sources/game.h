@@ -13,7 +13,7 @@ class GameLoop {
  public:
   GameLoop()
       : window_(sf::VideoMode(1000, 1000), "TheDarkestForest"),
-        gameState(new GameState), player_(new Player(0, 0, 10, 10, 0.07)), camera(), is_playing_(true) {
+        gameState(GameState::Instance()), player_(new Player(0, 0, 10, 10, 0.07)), camera(), is_playing_(true) {
     objects_.push_back(new Fire);
     objects_.push_back(player_);
     NewWave();
@@ -128,7 +128,6 @@ class GameLoop {
       iter->~Entity();
     }
     delete player_;
-    delete gameState;
     amount_of_enemies_ = 3;
     objects_.clear();
     objects_.push_back(new Fire);
@@ -136,7 +135,6 @@ class GameLoop {
     objects_.push_back(player_);
     camera.setCenter(0, 0);
     is_playing_ = true;
-    gameState = new GameState;
     Run();
   }
 };
