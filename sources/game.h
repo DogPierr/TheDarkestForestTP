@@ -2,20 +2,22 @@
 #define GAME_ON_SFML_SOURCES_GAME_H_
 
 #include "SFML/Graphics.hpp"
+#include "cmath"
 #include "dynamic_graphics.h"
 #include "entity.h"
 #include "map.h"
 #include "player.h"
 #include "water_slime.h"
-#include "cmath"
 
 class GameLoop {
- public:
+public:
   GameLoop()
       : window_(sf::VideoMode(1000, 1000), "TheDarkestForest"),
-        gameState(GameState::Instance()), player_(new Player(0, 0, 10, 10, 0.07)), camera(), is_playing_(true) {
-    objects_.push_back(new Fire);
-    objects_.push_back(player_);
+        gameState(GameState::Instance()),
+        player_(std::make_shared<Player>(0, 0, 10, 10, 0.07)), camera(),
+        is_playing_(true) {
+    objects_.push_back(std::make_shared<Fire>());
+    objects_.push_back(std::shared_ptr<Player>(player_));
     NewWave();
   }
 
@@ -23,8 +25,9 @@ class GameLoop {
     bool is_pushed = false;
     sf::Clock timer;
 
-    while (window_.isOpen() && !dynamic_cast<Mortal *>(objects_[0])->IsDead()
-        && !dynamic_cast<Mortal *>(objects_[1])->IsDead()) {
+    while (window_.isOpen() &&
+           !dynamic_pointer_cast<Mortal>(objects_[0])->IsDead() &&
+           !dynamic_pointer_cast<Mortal>(objects_[1])->IsDead()) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
       if (objects_.size() <= 2) {
@@ -38,12 +41,13 @@ class GameLoop {
       }
       window_.clear();
       auto iter = objects_.begin();
-      for (Entity *entity: objects_) {
+      for (std::shared_ptr<Entity> &entity : objects_) {
         if (is_playing_) {
           entity->Update(time);
           entity->Act(gameState);
         }
-        if (dynamic_cast<Mortal *>(entity)->IsDead() && iter != objects_.begin() && iter != objects_.begin() + 1) {
+        if (dynamic_pointer_cast<Mortal>(entity)->IsDead() &&
+            iter != objects_.begin() && iter != objects_.begin() + 1) {
           entity->~Entity();
           objects_.erase(iter);
         } else {
@@ -80,13 +84,13 @@ class GameLoop {
     }
   }
 
- private:
+private:
   sf::View camera;
   int amount_of_enemies_ = 3;
   GameState *gameState;
-  std::vector<Entity *> objects_;
+  std::vector<std::shared_ptr<Entity>> objects_;
   sf::RenderWindow window_;
-  Player *player_;
+  std::shared_ptr<Player> player_;
   bool is_playing_;
 
   void NewWave() {
@@ -95,7 +99,10 @@ class GameLoop {
     float cur_angle = 0;
     for (int i = 0; i < amount_of_enemies_; ++i) {
       float distance = 1000;
-      objects_.push_back(new WaterSlime(distance * cos(cur_angle), distance * sin(cur_angle), 10, 10, 0.04));
+      objects_.push_back(std::make_shared<WaterSlime>(
+          distance * cos(cur_angle), distance * sin(cur_angle), 10, 10, 0.04));
+      // objects_.push_back(new WaterSlime(distance * cos(cur_angle), distance *
+      // sin(cur_angle), 10, 10, 0.04));
       cur_angle += radians_spacing;
     }
   }
@@ -105,7 +112,9 @@ class GameLoop {
       sf::Font font;
       font.loadFromFile("../sources/fonts/EBGaramond-SemiBold.ttf");
       sf::Text title("PAUSE", font, 60);
-      title.setPosition(camera.getCenter().x - title.getGlobalBounds().width / 2, camera.getCenter().y);
+      title.setPosition(camera.getCenter().x -
+                            title.getGlobalBounds().width / 2,
+                        camera.getCenter().y);
       window_.draw(title);
     }
   }
@@ -116,8 +125,11 @@ class GameLoop {
     sf::Text title("YOU DIED", font, 80);
     title.setFillColor(sf::Color::Red);
     sf::Text continue_text("press any key to begin a new game", font, 30);
-    title.setPosition(camera.getCenter().x - title.getGlobalBounds().width / 2, camera.getCenter().y);
-    continue_text.setPosition(camera.getCenter().x - continue_text.getGlobalBounds().width / 2, camera.getCenter().y + 2 * title.getGlobalBounds().height);
+    title.setPosition(camera.getCenter().x - title.getGlobalBounds().width / 2,
+                      camera.getCenter().y);
+    continue_text.setPosition(
+        camera.getCenter().x - continue_text.getGlobalBounds().width / 2,
+        camera.getCenter().y + 2 * title.getGlobalBounds().height);
     window_.draw(title);
     window_.draw(continue_text);
     window_.display();
@@ -127,11 +139,10 @@ class GameLoop {
     for (auto iter : objects_) {
       iter->~Entity();
     }
-    delete player_;
     amount_of_enemies_ = 3;
     objects_.clear();
-    objects_.push_back(new Fire);
-    player_ = new Player(0, 0, 10, 10, 0.07);
+    objects_.push_back(std::make_shared<Fire>());
+    player_ = std::make_shared<Player>(0, 0, 10, 10, 0.07);
     objects_.push_back(player_);
     camera.setCenter(0, 0);
     is_playing_ = true;
@@ -139,4 +150,4 @@ class GameLoop {
   }
 };
 
-#endif  // GAME_ON_SFML_SOURCES_GAME_H_
+#endif // GAME_ON_SFML_SOURCES_GAME_H_
