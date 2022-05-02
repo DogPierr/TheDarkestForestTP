@@ -11,8 +11,7 @@ class GameState {
 
   float GetPlayerDamage();
 
-  std::tuple<bool, float, float> SetSlimeTarget(float x, float y,
-                                                bool is_animation_finished);
+  std::tuple<bool, float, float> SetSlimeTarget(float x, float y, float damage);
 
   float SlimeDamage(float x, float y);
 
@@ -40,7 +39,6 @@ class GameState {
   float fire_radius_ = 500;
   float player_take_damage_ = 0;
   float fire_take_damage_ = 0;
-  float slime_damage = 5;
 };
 
 #endif  // THEDARKESTFOREST_GAME_STATE_DECL_H

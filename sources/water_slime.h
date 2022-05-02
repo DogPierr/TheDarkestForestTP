@@ -34,8 +34,8 @@ class WaterSlime : public Unit {
       Die();
       return;
     }
-    auto [is_attacking, target_x, target_y] =
-        gameState->SetSlimeTarget(x_, y_, graphics_->IsAnimationFinished());
+    auto [is_attacking, target_x, target_y] = gameState->SetSlimeTarget(
+        x_, y_, graphics_->IsAnimationFinished() * damage_);
     is_attacking_ = is_attacking;
     target_x_ = target_x;
     target_y_ = target_y;

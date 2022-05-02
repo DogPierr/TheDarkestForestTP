@@ -15,21 +15,21 @@ float GameState::GetPlayerDamage() {
 }
 
 std::tuple<bool, float, float> GameState::SetSlimeTarget(
-    float x, float y, bool is_animation_finished) {
+    float x, float y, float damage) {
   float player_radius = CalculateRadius(player_ptr_->x_, player_ptr_->y_, x, y);
   float fire_radius = CalculateRadius(0, 0, x, y);
   bool is_attacking = fire_radius < 50 || player_radius < 50;
   if (player_radius < 100) {
     if (player_radius < 50) {
-      if (is_attacking && is_animation_finished)
-        player_take_damage_ += slime_damage;
+      if (is_attacking)
+        player_take_damage_ += damage;
       return {true, player_ptr_->x_, player_ptr_->y_};
     }
     return {false, player_ptr_->x_, player_ptr_->y_};
   }
   if (fire_radius < 50) {
-    if (is_attacking && is_animation_finished)
-      fire_take_damage_ += slime_damage / 5;
+    if (is_attacking)
+      fire_take_damage_ += damage / 5;
     return {true, 0, 0};
   }
   return {false, 0, 0};
