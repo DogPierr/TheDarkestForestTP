@@ -2,6 +2,7 @@
 #define THEDARKESTFOREST_GAME_STATE_DECL_H
 
 #include "SFML/Graphics.hpp"
+#include "memory"
 
 class Player;
 

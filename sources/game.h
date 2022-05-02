@@ -8,6 +8,7 @@
 #include "map.h"
 #include "memory"
 #include "player.h"
+#include "memory"
 #include "water_slime.h"
 
 class GameLoop {
