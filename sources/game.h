@@ -6,16 +6,19 @@
 #include "dynamic_graphics.h"
 #include "entity.h"
 #include "map.h"
+#include "memory"
 #include "player.h"
 #include "water_slime.h"
 
 class GameLoop {
-public:
+ public:
   GameLoop()
       : window_(sf::VideoMode(1000, 1000), "TheDarkestForest"),
         gameState(GameState::Instance()),
-        player_(std::make_shared<Player>(0, 0, 10, 10, 0.07)), camera(),
+        player_(std::make_shared<Player>(0, 0, 10, 10, 0.07)),
+        camera(),
         is_playing_(true) {
+    gameState->SetPlayerPtr(player_);
     objects_.push_back(std::make_shared<Fire>());
     objects_.push_back(std::shared_ptr<Player>(player_));
     NewWave();
@@ -26,8 +29,8 @@ public:
     sf::Clock timer;
 
     while (window_.isOpen() &&
-           !dynamic_pointer_cast<Mortal>(objects_[0])->IsDead() &&
-           !dynamic_pointer_cast<Mortal>(objects_[1])->IsDead()) {
+           !std::dynamic_pointer_cast<Mortal>(objects_[0])->IsDead() &&
+           !std::dynamic_pointer_cast<Mortal>(objects_[1])->IsDead()) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
       if (objects_.size() <= 2) {
@@ -41,14 +44,17 @@ public:
       }
       window_.clear();
       auto iter = objects_.begin();
-      for (std::shared_ptr<Entity> &entity : objects_) {
+      for (; iter != objects_.end();) {
+        auto entity = *iter;
+        if (!entity) {
+          objects_.erase(iter);
+        }
         if (is_playing_) {
           entity->Update(time);
           entity->Act(gameState);
         }
-        if (dynamic_pointer_cast<Mortal>(entity)->IsDead() &&
+        if (std::dynamic_pointer_cast<Mortal>(entity)->IsDead() &&
             iter != objects_.begin() && iter != objects_.begin() + 1) {
-          entity->~Entity();
           objects_.erase(iter);
         } else {
           entity->Draw(window_, gameState);
@@ -84,10 +90,10 @@ public:
     }
   }
 
-private:
+ private:
   sf::View camera;
   int amount_of_enemies_ = 3;
-  GameState *gameState;
+  GameState* gameState;
   std::vector<std::shared_ptr<Entity>> objects_;
   sf::RenderWindow window_;
   std::shared_ptr<Player> player_;
@@ -112,9 +118,9 @@ private:
       sf::Font font;
       font.loadFromFile("../sources/fonts/EBGaramond-SemiBold.ttf");
       sf::Text title("PAUSE", font, 60);
-      title.setPosition(camera.getCenter().x -
-                            title.getGlobalBounds().width / 2,
-                        camera.getCenter().y);
+      title.setPosition(
+          camera.getCenter().x - title.getGlobalBounds().width / 2,
+          camera.getCenter().y);
       window_.draw(title);
     }
   }
@@ -143,6 +149,7 @@ private:
     objects_.clear();
     objects_.push_back(std::make_shared<Fire>());
     player_ = std::make_shared<Player>(0, 0, 10, 10, 0.07);
+    gameState->SetPlayerPtr(player_);
     objects_.push_back(player_);
     camera.setCenter(0, 0);
     is_playing_ = true;
@@ -150,4 +157,4 @@ private:
   }
 };
 
-#endif // GAME_ON_SFML_SOURCES_GAME_H_
+#endif  // GAME_ON_SFML_SOURCES_GAME_H_

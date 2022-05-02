@@ -9,7 +9,7 @@
 #include "slime_graphics.h"
 
 class WaterSlime : public Unit {
-public:
+ public:
   WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
     graphics_ = new SlimeGraphics;
     line_of_sight_ = {1, 0};
@@ -28,13 +28,14 @@ public:
     }
   }
 
-  void Act(GameState *gameState) override {
+  void Act(GameState* gameState) override {
     if (health_ <= 0) {
       speed_ = 0;
       Die();
       return;
     }
-    auto [is_attacking, target_x, target_y] = gameState->SetSlimeTarget(x_, y_, graphics_->IsAnimationFinished());
+    auto [is_attacking, target_x, target_y] =
+        gameState->SetSlimeTarget(x_, y_, graphics_->IsAnimationFinished());
     is_attacking_ = is_attacking;
     target_x_ = target_x;
     target_y_ = target_y;
@@ -42,10 +43,11 @@ public:
     if (is_attacking_) {
       Attack();
     }
+
     health_ -= gameState->SlimeDamage(x_, y_);
   }
 
-private:
+ private:
   const float radius = 100;
   int damage_;
 
@@ -57,8 +59,7 @@ private:
     SetDirection(cos_alpha);
     graphics_->MoveInDirectionAnimation(line_of_sight_);
 
-    if (is_attacking_)
-      return;
+    if (is_attacking_) return;
 
     float dx_ = speed_ * cos_alpha;
     float dy_ = speed_ * sin_alpha;
@@ -96,4 +97,4 @@ private:
   bool is_attacking_;
 };
 
-#endif // GAME_ON_SFML_SOURCES_WATER_SLIME_H_
+#endif  // GAME_ON_SFML_SOURCES_WATER_SLIME_H_

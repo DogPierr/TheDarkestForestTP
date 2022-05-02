@@ -32,9 +32,7 @@ class Mortal : public Entity {
     graphics_->ChangeState("die");
   }
 
-  bool IsDead() {
-    return is_full_dead_;
-  }
+  bool IsDead() { return is_full_dead_; }
 
  private:
   const int health_bar_width_ = 20;

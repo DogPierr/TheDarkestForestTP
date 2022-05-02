@@ -3,26 +3,26 @@
 
 #include "SFML/Graphics.hpp"
 #include "dynamic_graphics.h"
-#include "game_state.h"
 #include "string"
 
 class Entity {
-public:
+ public:
   float x_, y_;
 
   Entity() = default;
 
-  virtual void Draw(sf::RenderWindow &window, GameState *gameState) {
+  virtual void Draw(sf::RenderWindow& window, GameState* gameState) {
     graphics_->Draw(window, gameState, x_, y_);
   };
 
-  virtual void Act(GameState *gameState) {}
+  virtual void Act(GameState* gameState) {}
 
   virtual void Update(float time) = 0;
 
   ~Entity() = default;
+
  protected:
-  DynamicGraphics *graphics_;
+  DynamicGraphics* graphics_;
 };
 
-#endif // GAME_ON_SFML_SOURCES_ENTITY_H_
+#endif  // GAME_ON_SFML_SOURCES_ENTITY_H_

@@ -14,7 +14,6 @@ class Unit : public Mortal {
   float speed_;
 
   Unit() = default;
-
 };
 
-#endif //GAME_ON_SFML_SOURCES_OBJECT_H_
+#endif  // GAME_ON_SFML_SOURCES_OBJECT_H_

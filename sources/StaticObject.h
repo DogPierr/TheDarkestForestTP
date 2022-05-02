@@ -3,13 +3,12 @@
 
 #include "SFML/Graphics.hpp"
 #include "entity.h"
-#include "game_state.h"
+#include "game_state_decl.h"
 
-class StaticObject: public Entity {
+class StaticObject : public Entity {
   void Update(float time) override {}
 
-  void Draw(sf::RenderWindow& window, GameState* gameState) override {
-  }
+  void Draw(sf::RenderWindow& window, GameState* gameState) override {}
 };
 
-#endif //GAME_ON_SFML_SOURCES_STATICOBJECT_H_
+#endif  // GAME_ON_SFML_SOURCES_STATICOBJECT_H_

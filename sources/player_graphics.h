@@ -4,7 +4,7 @@
 #include "dynamic_graphics.h"
 
 class PlayerGraphics : public DynamicGraphics {
-public:
+ public:
   PlayerGraphics()
       : DynamicGraphics("../sources/images/rogue.png"),
         background("../sources/images/background.png"),
@@ -22,7 +22,7 @@ public:
     sprite_.setTextureRect(frames_[0][0]);
   }
 
-  void Draw(sf::RenderWindow &window, GameState *gameState, float x,
+  void Draw(sf::RenderWindow& window, GameState* gameState, float x,
             float y) override {
     if (gameState->IsPlayerOutside()) {
       background.Draw(window, gameState, -102 + x, -102 + y);
@@ -53,7 +53,7 @@ public:
     }
   }
 
-  void MoveInDirectionAnimation(std::vector<float> &line_of_sight) override {
+  void MoveInDirectionAnimation(std::vector<float>& line_of_sight) override {
     if (line_of_sight == std::vector<float>{0, -1} ||
         line_of_sight == std::vector<float>{0, 1}) {
       state_ = "walk";
@@ -81,9 +81,9 @@ public:
     state_ = "stay";
   }
 
-private:
+ private:
   Graphics background;
   Graphics frame;
 };
 
-#endif // THEDARKESTFOREST_SOURCES_PLAYER_GRAPHICS_H_
+#endif  // THEDARKESTFOREST_SOURCES_PLAYER_GRAPHICS_H_

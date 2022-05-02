@@ -4,7 +4,7 @@
 #include "dynamic_graphics.h"
 
 class FireGraphics : public DynamicGraphics {
-public:
+ public:
   FireGraphics()
       : DynamicGraphics("../sources/images/CampFire.png"),
         background("../sources/images/background.png"),
@@ -24,16 +24,16 @@ public:
     }
   }
 
-  void Draw(sf::RenderWindow &window, GameState *gameState, float x, float y) {
+  void Draw(sf::RenderWindow& window, GameState* gameState, float x, float y) {
     background.Draw(window, gameState, -500, -500);
     frame.Draw(window, gameState, -500, -500);
     sprite_.setPosition(x, y);
     window.draw(sprite_);
   }
 
-private:
+ private:
   Graphics background;
   Graphics frame;
 };
 
-#endif // THEDARKESTFOREST_SOURCES_FIRE_GRAPHICS_H_
+#endif  // THEDARKESTFOREST_SOURCES_FIRE_GRAPHICS_H_
