@@ -19,12 +19,18 @@
 
 ### Как установить необходимые библиотеки?
 
-- **Linux** - sudo apt-get install libsfml-dev
-- **macOS** - brew install sfml
+- **Linux** - ```sudo apt-get install libsfml-dev```
+- **macOS** - ```brew install sfml```
 
 ### Как собрать программу?
 
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+### Ход разработки
+1. Разработана основная архитектура игры, UML, реализован MVP.
+2. Затемнение объектов, пауза, меню после смерти. 

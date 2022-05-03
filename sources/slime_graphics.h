@@ -19,19 +19,22 @@ class SlimeGraphics : public DynamicGraphics {
     for (int j = 0; j < 5; ++j) {
       inverse_frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
-        inverse_frames_[j].push_back(sf::IntRect(10 + i * 32, 172 + j * 32, 12, 20));
+        inverse_frames_[j].push_back(
+            sf::IntRect(10 + i * 32, 172 + j * 32, 12, 20));
       }
     }
     for (int j = 0; j < 5; ++j) {
       frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
-        frames_[j].push_back(sf::IntRect(10 + i * 32 + 12, 172 + j * 32, -12, 20));
+        frames_[j].push_back(
+            sf::IntRect(10 + i * 32 + 12, 172 + j * 32, -12, 20));
       }
     }
   }
 
   void MoveInDirectionAnimation(std::vector<float>& line_of_sight) override {
-    if (line_of_sight == std::vector<float>{0, -1} or line_of_sight == std::vector<float>{0, 1}) {
+    if (line_of_sight == std::vector<float>{0, -1} or
+        line_of_sight == std::vector<float>{0, 1}) {
       state_ = "walk";
       fps_ = 5;
     }
@@ -53,5 +56,4 @@ class SlimeGraphics : public DynamicGraphics {
   }
 };
 
-
-#endif //THEDARKESTFOREST_SOURCES_SLIME_GRAPHICS_H_
+#endif  // THEDARKESTFOREST_SOURCES_SLIME_GRAPHICS_H_

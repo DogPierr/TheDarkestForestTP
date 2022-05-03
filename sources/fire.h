@@ -18,7 +18,9 @@ class Fire : public Mortal {
 
   void Act(GameState* gameState) override {
     health_ -= gameState->GetFireDamage();
-    if (health_ <= 0) exit(0);
+    if (health_ <= 0) {
+      is_full_dead_ = true;
+    }
   }
 
  private:

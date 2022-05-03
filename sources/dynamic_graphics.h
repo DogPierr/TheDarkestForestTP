@@ -1,9 +1,10 @@
 #ifndef GAME_ON_SFML_SOURCES_GRAPHICS_H_
 #define GAME_ON_SFML_SOURCES_GRAPHICS_H_
 
+#include <map>
+
 #include "SFML/Graphics.hpp"
 #include "static_graphics.h"
-#include <map>
 
 class DynamicGraphics : public Graphics {
  public:
@@ -15,7 +16,12 @@ class DynamicGraphics : public Graphics {
         states_() {}
 
   DynamicGraphics(const std::string& image)
-      : Graphics(image), frames_(0), inverse_frames_(0), is_inverse_(false), state_(""), states_() {}
+      : Graphics(image),
+        frames_(0),
+        inverse_frames_(0),
+        is_inverse_(false),
+        state_(""),
+        states_() {}
 
   void ChangeFrame(float time) {
     current_frame_ += fps_ * time;
@@ -38,11 +44,13 @@ class DynamicGraphics : public Graphics {
   }
 
   bool IsAnimationFinished() {
-    if (static_cast<int>(current_frame_) == frames_[states_[state_]].size() - 1) {
+    if (static_cast<int>(current_frame_) ==
+        frames_[states_[state_]].size() - 1) {
       current_frame_ = 0;
       return true;
     }
-    return static_cast<int>(current_frame_) == frames_[states_[state_]].size() - 1;
+    return static_cast<int>(current_frame_) ==
+           frames_[states_[state_]].size() - 1;
   }
 
   virtual void GenerateFrames() = 0;
@@ -58,4 +66,4 @@ class DynamicGraphics : public Graphics {
   std::map<std::string, int> states_;
 };
 
-#endif // GAME_ON_SFML_SOURCES_GRAPHICS_H_
+#endif  // GAME_ON_SFML_SOURCES_GRAPHICS_H_

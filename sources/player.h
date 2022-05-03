@@ -25,26 +25,16 @@ class Player : public Unit {
     line_of_sight_ = {1, 0};
   }
 
-  void Attack(Unit* enemy) {
-    std::vector<float> radius_vector(2);
-    radius_vector[0] = enemy->x_ - x_;
-    radius_vector[1] = enemy->y_ - y_;
-    float distance = sqrt((enemy->x_ - x_) * (enemy->x_ - x_) +
-                          (enemy->y_ - y_) * (enemy->y_ - y_));
-    float angle = (line_of_sight_[0] * radius_vector[0] +
-                   line_of_sight_[1] * radius_vector[1]) /
-                  distance;
-    if (is_attacking_ && graphics_->IsAnimationFinished() &&
-        angle >= 0 && distance <= 50) {
-      enemy->health_ -= damage_;
-    }
-  }
-
   void Update(float time) override {
     KeyboardRead();
     if (!is_full_dead_) {
       graphics_->ChangeFrame(time);
     }
+  }
+
+  void Draw(sf::RenderWindow& window, GameState* gameState) override {
+    graphics_->Draw(window, gameState, x_, y_);
+    DrawHealthBar(window);
   }
 
   void Act(GameState* gameState) override {
@@ -54,8 +44,9 @@ class Player : public Unit {
       return;
     }
     health_ -= gameState->GetPlayerDamage();
-    gameState->GetPlayerData(x_, y_, is_attacking_, graphics_->IsAnimationFinished(), line_of_sight_);
   }
+
+  bool IsAnimationFinished() { return graphics_->IsAnimationFinished(); }
 
   ~Player() {}
 

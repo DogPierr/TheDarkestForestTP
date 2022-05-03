@@ -16,15 +16,9 @@ class Mortal : public Entity {
     if (!gameState->IsVisible(x_, y_)) {
       return;
     }
+    graphics_->SetBlackout(gameState->GetIntencityRatio(x_, y_));
     graphics_->Draw(window, gameState, x_, y_);
-    float ratio = GetHealthRatio();
-    health_bar_.setPosition(x_, y_);
-    if (health_ <= 0) {
-      health_bar_.setScale(0, 1);
-    } else {
-      health_bar_.setScale(2 * ratio, 1);
-    }
-    window.draw(health_bar_);
+    DrawHealthBar(window);
   }
 
   void Die() {
@@ -38,6 +32,8 @@ class Mortal : public Entity {
     graphics_->ChangeState("die");
   }
 
+  bool IsDead() { return is_full_dead_; }
+
  private:
   const int health_bar_width_ = 20;
   const int health_bar_height_ = 5;
@@ -49,6 +45,17 @@ class Mortal : public Entity {
  protected:
   bool is_dead_, is_full_dead_;
   float max_health_;
+
+  void DrawHealthBar(sf::RenderWindow& window) {
+    float ratio = GetHealthRatio();
+    health_bar_.setPosition(x_, y_);
+    if (health_ <= 0) {
+      health_bar_.setScale(0, 1);
+    } else {
+      health_bar_.setScale(2 * ratio, 1);
+    }
+    window.draw(health_bar_);
+  }
 };
 
 #endif  // GAME_ON_SFML_SOURCES_MORTAL_H_

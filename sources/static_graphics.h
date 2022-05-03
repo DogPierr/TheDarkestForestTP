@@ -2,7 +2,7 @@
 #define GAME_ON_SFML_STATIC_GRAPHICS_H
 
 #include "SFML/Graphics.hpp"
-#include "game_state.h"
+#include "game_state_decl.h"
 
 class Graphics {
  public:
@@ -13,15 +13,21 @@ class Graphics {
     sprite_.setTexture(texture_);
   }
 
-  Graphics(const sf::Color& color) {
-    sprite_.setColor(color);
+  Graphics(const sf::Color& color) { sprite_.setColor(color); }
+
+  void SetScale(float number) { sprite_.setScale(number, number); }
+
+  void SetBlackout(float ratio) {
+    if (ratio < 1) {
+      sprite_.setColor(
+          sf::Color(255 * (1 - ratio), 255 * (1 - ratio), 255 * (1 - ratio)));
+      return;
+    }
+    sprite_.setColor(sf::Color(0, 0, 0));
   }
 
-  void SetScale(float number) {
-    sprite_.setScale(number, number);
-  }
-
-  virtual void Draw(sf::RenderWindow& window, GameState* gameState, float x, float y) {
+  virtual void Draw(sf::RenderWindow& window, GameState* gameState, float x,
+                    float y) {
     sprite_.setPosition(x, y);
     window.draw(sprite_);
   }
